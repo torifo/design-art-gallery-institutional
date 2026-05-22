@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MASS — Museum of Modern and Contemporary Art</title>
+  <meta name="description" content="MASS is a fictional public museum of modern and contemporary art. Access is a right, not a feature." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Inter+Tight:wght@500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --bg:#FAF7F0; --bg-sub:#F2EEE3; --bg-deep:#1A1A1A; --fg:#181818; --fg-muted:#5A5A56; --fg-light:#989088; --border:#D4CFC2; --border-strong:#B8B2A4; --accent:#DD1A21; --accent-2:#1A4A8E; --accent-2-deep:#0F2F5C; --font-display:'Inter Tight',-apple-system,'Helvetica Neue',sans-serif; --font-sans:'Inter',-apple-system,sans-serif; --font-serif:'EB Garamond',Garamond,Georgia,serif; --space-xl:clamp(5rem,10vw,9rem); --space-lg:clamp(3rem,6vw,5rem); --space-md:2rem; --sidebar-w:280px; --gutter:clamp(1rem,3vw,2.5rem); --ease:cubic-bezier(.22,1,.36,1); --max:1440px; }
+    html { -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; scroll-behavior:smooth; }
+    body { background:var(--bg); color:var(--fg); font-family:var(--font-sans); font-weight:400; line-height:1.65; font-size:16px; }
+    a { color:var(--accent-2); text-decoration:underline; text-underline-offset:3px; text-decoration-thickness:1px; }
+    a:hover, a:visited { color:var(--accent-2-deep); }
+    img { display:block; width:100%; height:100%; object-fit:cover; }
+    button { font:inherit; background:none; border:0; color:inherit; cursor:pointer; }
+    :focus { outline:none; }
+    :focus-visible { outline:2px solid var(--accent); outline-offset:2px; border-radius:1px; }
+    .skip-link { position:absolute; left:1rem; top:-3rem; padding:.65rem 1rem; background:var(--fg); color:var(--bg); font-family:var(--font-display); font-size:.8rem; letter-spacing:.06em; text-transform:uppercase; z-index:100; text-decoration:none; transition:top .2s var(--ease); }
+    .skip-link:focus { top:1rem; color:var(--bg); }
+    .util-bar { background:var(--bg-sub); border-bottom:1px solid var(--border); font-size:.8rem; color:var(--fg-muted); }
+    .util-inner { max-width:var(--max); margin:0 auto; display:flex; justify-content:space-between; align-items:center; gap:1rem; padding:.6rem var(--gutter); flex-wrap:wrap; }
+    .util-status { display:inline-flex; align-items:center; gap:.55rem; color:var(--fg); font-weight:500; }
+    .live-dot { width:8px; height:8px; border-radius:50%; background:#2D8F4E; display:inline-block; box-shadow:0 0 0 0 rgba(45,143,78,.5); animation:pulse 2.4s var(--ease) infinite; }
+    @keyframes pulse { 0%,100% { box-shadow:0 0 0 0 rgba(45,143,78,.45); } 50% { box-shadow:0 0 0 6px rgba(45,143,78,0); } }
+    .util-right { display:flex; align-items:center; gap:1.5rem; flex-wrap:wrap; }
+    .util-tickets { color:var(--fg); font-weight:500; text-decoration:none; border-bottom:1px solid var(--fg); padding-bottom:2px; }
+    .util-tickets:hover { color:var(--accent); border-color:var(--accent); }
+    .lang-switch { display:inline-flex; gap:.15rem; align-items:center; }
+    .lang-switch button { padding:.15rem .45rem; font-size:.78rem; color:var(--fg-muted); border-radius:2px; }
+    .lang-switch button[aria-pressed="true"] { color:var(--fg); font-weight:600; background:var(--bg); }
+    .lang-switch button[aria-disabled="true"] { opacity:.45; cursor:not-allowed; }
+    .lang-switch span.sep { color:var(--fg-light); }
+    header.site-header { position:sticky; top:0; z-index:30; background:var(--bg); border-bottom:1px solid var(--border); transition:box-shadow .3s var(--ease); }
+    header.site-header.scrolled { box-shadow:0 1px 0 var(--border), 0 6px 18px -12px rgba(0,0,0,.18); }
+    .nav-inner { max-width:var(--max); margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:1.5rem; padding:1.1rem var(--gutter); }
+    .logo { font-family:var(--font-display); font-weight:700; font-size:1.55rem; letter-spacing:-.02em; color:var(--fg); text-decoration:none; }
+    .logo span { color:var(--accent); }
+    .nav-primary ul { list-style:none; display:flex; gap:clamp(.8rem,2.2vw,2.1rem); }
+    .nav-primary a { font-size:.78rem; text-transform:uppercase; letter-spacing:.08em; color:var(--fg); text-decoration:none; font-weight:500; padding:.4rem 0; display:inline-block; border-bottom:1px solid transparent; }
+    .nav-primary a:hover { border-color:var(--fg); }
+    .nav-search { font-size:.78rem; text-transform:uppercase; letter-spacing:.08em; color:var(--fg-muted); text-decoration:none; display:inline-flex; align-items:center; gap:.4rem; }
+    .nav-toggle { display:none; }
+    .hero { max-width:var(--max); margin:0 auto; padding:var(--space-md) var(--gutter) var(--space-lg); display:grid; grid-template-columns:var(--sidebar-w) 1fr; gap:var(--gutter); animation:fadein .6s var(--ease) both; }
+    @keyframes fadein { from { opacity:0; } to { opacity:1; } }
+    .hero-meta { border-right:1px solid var(--border); padding-right:1.5rem; font-size:.88rem; color:var(--fg-muted); }
+    .hero-meta details { display:flex; flex-direction:column; gap:1.1rem; }
+    .hero-meta summary { display:none; }
+    .hero-meta details > div { display:flex; flex-direction:column; gap:1.1rem; }
+    .hero-meta .row { display:flex; flex-direction:column; gap:.2rem; }
+    .hero-meta .fn-num { font-family:var(--font-serif); font-style:italic; font-size:.92rem; color:var(--fg-light); }
+    .hero-meta .label { font-size:.68rem; text-transform:uppercase; letter-spacing:.12em; color:var(--fg-light); font-weight:500; }
+    .hero-meta .value { color:var(--fg); font-size:.92rem; line-height:1.4; }
+    .hero-meta .value strong { font-weight:500; }
+    .hero-meta hr { border:0; border-top:1px solid var(--border); margin:.3rem 0; }
+    .hero-main { display:flex; flex-direction:column; gap:1.6rem; }
+    .hero-img { position:relative; aspect-ratio:16/10; background:var(--bg-sub); overflow:hidden; }
+    .hero-credit { font-family:var(--font-serif); font-style:italic; font-size:.8rem; color:var(--fg-muted); margin-top:.5rem; }
+    .hero-eyebrow { font-size:.72rem; text-transform:uppercase; letter-spacing:.14em; color:var(--accent); font-weight:600; }
+    .hero-title { font-family:var(--font-display); font-weight:600; font-size:clamp(2.8rem,6.5vw,6.5rem); letter-spacing:-.018em; line-height:1.02; color:var(--fg); margin-top:.4rem; }
+    .hero-sub { font-family:var(--font-serif); font-style:italic; font-size:clamp(1.1rem,1.6vw,1.45rem); color:var(--fg-muted); line-height:1.4; max-width:42rem; margin-top:.8rem; }
+    .hero-cta { display:inline-flex; gap:1.5rem; margin-top:1.2rem; flex-wrap:wrap; }
+    .hero-cta a { font-size:.85rem; }
+    .section { padding:var(--space-xl) 0; border-top:1px solid var(--border); }
+    .section-head { max-width:var(--max); margin:0 auto var(--space-md); padding:0 var(--gutter); display:flex; justify-content:space-between; align-items:baseline; gap:1rem; flex-wrap:wrap; }
+    .section-eyebrow { font-size:.72rem; text-transform:uppercase; letter-spacing:.14em; color:var(--fg-light); font-weight:600; }
+    .section-title { font-family:var(--font-display); font-weight:600; font-size:clamp(1.8rem,3.5vw,3rem); letter-spacing:-.015em; line-height:1.05; color:var(--fg); margin-top:.35rem; }
+    .section-link { font-size:.85rem; color:var(--accent-2); }
+    .ex-grid { max-width:var(--max); margin:0 auto; padding:0 var(--gutter); display:grid; grid-template-columns:repeat(3,1fr); gap:var(--gutter); }
+    .ex-card { display:flex; flex-direction:column; gap:1rem; padding-top:1.2rem; border-top:2px solid var(--fg); }
+    .ex-num { font-family:var(--font-serif); font-style:italic; font-size:1rem; color:var(--fg-light); display:flex; justify-content:space-between; align-items:baseline; }
+    .ex-status { font-family:var(--font-sans); font-style:normal; font-size:.68rem; text-transform:uppercase; letter-spacing:.14em; color:var(--fg-muted); font-weight:600; }
+    .ex-status.now { color:var(--accent); }
+    .ex-img { aspect-ratio:4/3; background:var(--bg-sub); overflow:hidden; }
+    .ex-meta { display:flex; flex-direction:column; gap:.5rem; }
+    .ex-title { font-family:var(--font-display); font-weight:600; font-size:1.4rem; line-height:1.15; letter-spacing:-.01em; color:var(--fg); }
+    .ex-dates { font-size:.85rem; color:var(--fg-muted); }
+    .ex-curator { font-family:var(--font-serif); font-style:italic; font-size:.88rem; color:var(--fg-muted); }
+    .ex-card a.link { font-size:.82rem; margin-top:.3rem; align-self:flex-start; }
+    .collection-grid { max-width:var(--max); margin:0 auto; padding:0 var(--gutter); display:grid; grid-template-columns:var(--sidebar-w) 1fr; gap:var(--gutter); }
+    .col-sidebar { border-right:1px solid var(--border); padding-right:1.5rem; }
+    .filter-group { margin-bottom:1.8rem; }
+    .filter-group h3 { font-weight:600; font-size:.7rem; text-transform:uppercase; letter-spacing:.14em; color:var(--fg-light); margin-bottom:.8rem; }
+    .filter-group ul { list-style:none; display:flex; flex-direction:column; gap:.35rem; }
+    .filter-group a { display:flex; justify-content:space-between; align-items:baseline; font-size:.9rem; color:var(--fg); text-decoration:none; padding:.2rem 0; border-bottom:1px dotted transparent; }
+    .filter-group a:hover { border-color:var(--fg); color:var(--accent-2); }
+    .filter-group a .count { font-family:var(--font-serif); font-style:italic; font-size:.82rem; color:var(--fg-light); }
+    .work-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.2rem; }
+    .work { display:flex; flex-direction:column; gap:.6rem; }
+    .work-img { aspect-ratio:4/5; background:var(--bg-sub); overflow:hidden; transition:opacity .3s var(--ease); }
+    .work:hover .work-img { opacity:.9; }
+    .work-cap { font-family:var(--font-serif); font-size:.82rem; line-height:1.4; color:var(--fg-muted); }
+    .work-cap strong { font-style:italic; color:var(--fg); font-weight:500; }
+    .col-all { margin-top:1.5rem; padding-top:1.5rem; border-top:1px solid var(--border); font-size:.95rem; }
+    .visit-grid { max-width:var(--max); margin:0 auto; padding:0 var(--gutter); display:grid; grid-template-columns:1fr 1fr 1fr; gap:var(--gutter); }
+    .visit-block h3 { font-weight:600; font-size:.72rem; text-transform:uppercase; letter-spacing:.14em; color:var(--fg-light); margin-bottom:.9rem; }
+    .hours-table { width:100%; border-collapse:collapse; font-size:.92rem; }
+    .hours-table tr { border-bottom:1px solid var(--border); }
+    .hours-table th, .hours-table td { text-align:left; padding:.55rem 0; font-weight:400; }
+    .hours-table th { color:var(--fg-muted); width:45%; }
+    .hours-table td.closed { color:var(--fg-light); }
+    .hours-table tr.today { background:linear-gradient(to right,var(--bg-sub) 0%,transparent 90%); }
+    .hours-table tr.today th { color:var(--fg); font-weight:600; position:relative; padding-left:1rem; }
+    .hours-table tr.today th::before { content:""; position:absolute; left:0; top:50%; width:4px; height:14px; background:var(--accent); transform:translateY(-50%); }
+    .visit-status { display:inline-flex; align-items:center; gap:.5rem; font-size:.8rem; color:var(--fg-muted); margin-top:1rem; }
+    .visit-status .live-dot { width:7px; height:7px; }
+    .visit-address { font-family:var(--font-serif); font-size:1rem; line-height:1.5; color:var(--fg); font-style:normal; }
+    .visit-address p { margin-bottom:.8rem; }
+    .visit-map { aspect-ratio:4/3; background:var(--bg-sub); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px); background-size:32px 32px; background-position:-1px -1px; }
+    .visit-map a { background:var(--bg); padding:.8rem 1.2rem; border:1px solid var(--fg); color:var(--fg); font-size:.8rem; text-transform:uppercase; letter-spacing:.1em; text-decoration:none; font-weight:500; }
+    .visit-map a:hover { background:var(--fg); color:var(--bg); }
+    .mission { background:var(--bg-deep); color:#E8E6DF; padding:clamp(6rem,12vw,10rem) 0; border-top:0; }
+    .mission-inner { max-width:var(--max); margin:0 auto; padding:0 var(--gutter); display:grid; grid-template-columns:var(--sidebar-w) 1fr; gap:var(--gutter); }
+    .mission-aside { border-right:1px solid #333; padding-right:1.5rem; font-size:.85rem; color:#8a8680; display:flex; flex-direction:column; gap:1rem; }
+    .mission-aside .label { font-size:.68rem; text-transform:uppercase; letter-spacing:.14em; color:var(--accent); font-weight:600; }
+    .mission-aside .value { color:#D8D5CD; font-size:.92rem; }
+    .mission-aside hr { border:0; border-top:1px solid #2a2a2a; }
+    .mission-body { max-width:60rem; }
+    .mission-eyebrow { font-size:.72rem; text-transform:uppercase; letter-spacing:.16em; color:var(--accent); font-weight:600; margin-bottom:1.5rem; }
+    .mission-quote { font-family:var(--font-serif); font-style:italic; font-weight:400; font-size:clamp(1.7rem,3.6vw,3.2rem); line-height:1.18; color:#F0EDE5; letter-spacing:-.005em; }
+    .mission-quote::before { content:open-quote; color:var(--accent); margin-right:.1em; }
+    .mission-quote::after { content:close-quote; color:var(--accent); margin-left:.05em; }
+    .mission-signature { margin-top:2.4rem; font-family:var(--font-serif); font-size:1.05rem; color:#C8C5BD; }
+    .mission-signature .name { font-style:italic; }
+    .mission-signature .role { display:block; font-family:var(--font-sans); font-style:normal; font-size:.78rem; color:#8a8680; text-transform:uppercase; letter-spacing:.12em; margin-top:.35rem; }
+    .learn-grid { max-width:var(--max); margin:0 auto; padding:0 var(--gutter); display:grid; grid-template-columns:repeat(3,1fr); gap:var(--gutter); }
+    .learn-card { padding:1.8rem; background:var(--bg-sub); border:1px solid var(--border); display:flex; flex-direction:column; gap:.8rem; }
+    .learn-num { font-family:var(--font-serif); font-style:italic; font-size:.92rem; color:var(--fg-light); }
+    .learn-title { font-family:var(--font-display); font-weight:600; font-size:1.3rem; line-height:1.2; color:var(--fg); }
+    .learn-desc { font-size:.92rem; color:var(--fg-muted); line-height:1.55; }
+    .learn-card a { font-size:.82rem; margin-top:.3rem; align-self:flex-start; }
+    .mem-grid { max-width:var(--max); margin:0 auto; padding:0 var(--gutter); display:grid; grid-template-columns:repeat(3,1fr); border:1px solid var(--border); background:var(--bg); }
+    .mem-tier { padding:2rem 1.6rem; border-right:1px solid var(--border); display:flex; flex-direction:column; gap:1rem; }
+    .mem-tier:last-child { border-right:0; }
+    .mem-tier.featured { background:var(--bg-sub); }
+    .mem-tier-name { font-family:var(--font-display); font-weight:600; font-size:1.4rem; color:var(--fg); }
+    .mem-tier-name.featured-tag::after { content:"Most popular"; display:inline-block; margin-left:.6rem; font-family:var(--font-sans); font-size:.65rem; text-transform:uppercase; letter-spacing:.1em; color:var(--accent); font-weight:600; border:1px solid var(--accent); padding:.15rem .4rem; vertical-align:middle; }
+    .mem-price { font-family:var(--font-display); font-weight:600; font-size:2rem; color:var(--fg); }
+    .mem-price span { font-family:var(--font-sans); font-size:.82rem; font-weight:400; color:var(--fg-muted); }
+    .mem-features { list-style:none; display:flex; flex-direction:column; gap:.55rem; font-size:.9rem; color:var(--fg-muted); margin-top:.4rem; }
+    .mem-features li { padding-left:1.2rem; position:relative; line-height:1.45; }
+    .mem-features li::before { content:""; position:absolute; left:0; top:.65em; width:6px; height:1px; background:var(--fg-muted); }
+    .mem-cta { margin-top:auto; padding:.7rem 1rem; border:1px solid var(--fg); color:var(--fg); background:transparent; font-size:.8rem; text-transform:uppercase; letter-spacing:.1em; text-decoration:none; text-align:center; font-weight:500; }
+    .mem-cta:hover { background:var(--fg); color:var(--bg); }
+    footer.site-footer { background:var(--bg-sub); border-top:1px solid var(--border); padding:var(--space-lg) 0 2rem; }
+    .footer-inner { max-width:var(--max); margin:0 auto; padding:0 var(--gutter); }
+    .footer-top { display:grid; grid-template-columns:1.4fr repeat(4,1fr); gap:var(--gutter); padding-bottom:2.5rem; border-bottom:1px solid var(--border); }
+    .footer-brand .logo { display:block; margin-bottom:.8rem; }
+    .footer-brand p { font-family:var(--font-serif); font-style:italic; font-size:.92rem; color:var(--fg-muted); max-width:22rem; line-height:1.5; }
+    .footer-newsletter { margin-top:1.4rem; }
+    .footer-newsletter label { display:block; font-size:.7rem; text-transform:uppercase; letter-spacing:.12em; color:var(--fg-light); margin-bottom:.5rem; font-weight:600; }
+    .footer-newsletter form { display:flex; border:1px solid var(--border-strong); max-width:22rem; }
+    .footer-newsletter input { flex:1; padding:.65rem .7rem; font:inherit; font-size:.88rem; background:var(--bg); border:0; color:var(--fg); }
+    .footer-newsletter button { padding:.65rem 1rem; background:var(--fg); color:var(--bg); font-size:.72rem; text-transform:uppercase; letter-spacing:.1em; font-weight:600; }
+    .footer-col h4 { font-weight:600; font-size:.72rem; text-transform:uppercase; letter-spacing:.14em; color:var(--fg-light); margin-bottom:1rem; }
+    .footer-col ul { list-style:none; display:flex; flex-direction:column; gap:.5rem; }
+    .footer-col a { font-size:.9rem; color:var(--fg); text-decoration:none; }
+    .footer-col a:hover { color:var(--accent-2); text-decoration:underline; }
+    .footer-bottom { padding-top:1.8rem; display:flex; justify-content:space-between; align-items:center; gap:1rem; flex-wrap:wrap; font-size:.82rem; color:var(--fg-muted); }
+    .footer-bottom .social { display:flex; gap:1rem; }
+    .footer-bottom .social a { font-size:.8rem; text-transform:uppercase; letter-spacing:.1em; color:var(--fg-muted); text-decoration:none; }
+    .footer-bottom .social a:hover { color:var(--fg); }
+    .footer-disclaimer { max-width:var(--max); margin:1.5rem auto 0; padding:0 var(--gutter); font-family:var(--font-serif); font-style:italic; font-size:.82rem; color:var(--fg-light); text-align:center; }
+    [data-lang-en], [data-lang-ja] { display:inline; }
+    html[lang="en"] [data-lang-ja] { display:none; }
+    html[lang="ja"] [data-lang-en] { display:none; }
+    html[lang="ja"] body { font-feature-settings:"palt"; }
+    @media (max-width:900px) {
+      .nav-primary { display:none; position:absolute; left:0; right:0; top:100%; background:var(--bg); border-bottom:1px solid var(--border); padding:1.2rem var(--gutter); }
+      .nav-primary.open { display:block; }
+      .nav-primary ul { flex-direction:column; gap:0; }
+      .nav-primary a { display:block; padding:.85rem 0; border-bottom:1px solid var(--border); }
+      .nav-primary li:last-child a { border-bottom:0; }
+      .nav-search { display:none; }
+      .nav-toggle { display:inline-flex; align-items:center; gap:.5rem; font-size:.75rem; text-transform:uppercase; letter-spacing:.1em; color:var(--fg); font-weight:600; padding:.4rem .6rem; border:1px solid var(--border); }
+      .nav-toggle .bars { display:inline-flex; flex-direction:column; gap:3px; }
+      .nav-toggle .bars span { width:14px; height:1.5px; background:var(--fg); }
+      .hero { grid-template-columns:1fr; }
+      .hero-meta { border-right:0; border-top:1px solid var(--border); border-bottom:1px solid var(--border); padding:0; order:3; }
+      .hero-meta summary { display:flex; list-style:none; cursor:pointer; padding:.9rem 0; justify-content:space-between; font-size:.72rem; text-transform:uppercase; letter-spacing:.14em; color:var(--fg); font-weight:600; }
+      .hero-meta summary::-webkit-details-marker { display:none; }
+      .hero-meta summary::after { content:"+"; font-size:1.1rem; line-height:1; }
+      .hero-meta details[open] summary::after { content:"−"; }
+      .hero-meta details > div { padding:0 0 1rem; }
+      .ex-grid, .collection-grid, .visit-grid, .mission-inner, .learn-grid, .mem-grid { grid-template-columns:1fr; }
+      .ex-grid { gap:var(--space-md); }
+      .col-sidebar { border-right:0; padding-right:0; border-bottom:1px solid var(--border); padding-bottom:1rem; }
+      .work-grid { grid-template-columns:1fr 1fr; gap:1rem; }
+      .mission-aside { border-right:0; border-bottom:1px solid #333; padding-right:0; padding-bottom:1.5rem; flex-direction:row; flex-wrap:wrap; gap:1.4rem; }
+      .mission-aside hr { display:none; }
+      .mem-tier { border-right:0; border-bottom:1px solid var(--border); }
+      .mem-tier:last-child { border-bottom:0; }
+      .footer-top { grid-template-columns:1fr 1fr; gap:2rem; }
+      .footer-brand { grid-column:1 / -1; }
+    }
+    @media (max-width:480px) {
+      .util-inner { font-size:.72rem; gap:.6rem; }
+      .util-right { gap:.9rem; }
+      .footer-top { grid-template-columns:1fr; }
+    }
+    @media (prefers-reduced-motion:reduce) {
+      *, *::before, *::after { animation-duration:.001s !important; animation-iteration-count:1 !important; transition-duration:.001s !important; scroll-behavior:auto !important; }
+      .live-dot { animation:none; }
+    }
+    @media print {
+      .util-bar, header.site-header, .footer-newsletter, .nav-toggle { display:none; }
+      body, .mission { background:white; color:black; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <!-- Utility bar -->
+  <div class="util-bar" role="region" aria-label="Visitor utilities">
+    <div class="util-inner">
+      <span class="util-status">
+        <span class="live-dot" aria-hidden="true"></span>
+        <span class="sr-status">
+          <span data-lang-en>OPEN until 18:00</span><span data-lang-ja>開館中 18:00まで</span>
+        </span>
+      </span>
+      <div class="util-right">
+        <a class="util-tickets" href="https://example.com/tickets" target="_blank" rel="noopener">
+          <span data-lang-en>Buy Tickets &nearr;</span><span data-lang-ja>チケット購入 &nearr;</span>
+        </a>
+        <div class="lang-switch" role="group" aria-label="Language switcher">
+          <button type="button" data-lang-set="en" aria-pressed="true" aria-label="Language: English">EN</button>
+          <span class="sep" aria-hidden="true">/</span>
+          <button type="button" data-lang-set="ja" aria-pressed="false" aria-label="言語: 日本語">日本語</button>
+          <span class="sep" aria-hidden="true">/</span>
+          <button type="button" aria-disabled="true" aria-label="Language: Spanish (coming soon)">ES</button>
+          <span class="sep" aria-hidden="true">/</span>
+          <button type="button" aria-disabled="true" aria-label="Language: Chinese (coming soon)">中文</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header / nav -->
+  <header class="site-header" role="banner">
+    <div class="nav-inner">
+      <a class="logo" href="#" aria-label="MASS — return to home">MA<span>SS</span></a>
+      <nav class="nav-primary" id="nav-primary" aria-label="Primary">
+        <ul>
+          <li><a href="#visit"><span data-lang-en>Visit</span><span data-lang-ja>来館案内</span></a></li>
+          <li><a href="#exhibitions"><span data-lang-en>Exhibitions</span><span data-lang-ja>展覧会</span></a></li>
+          <li><a href="#collection"><span data-lang-en>Collection</span><span data-lang-ja>コレクション</span></a></li>
+          <li><a href="#learn"><span data-lang-en>Learn</span><span data-lang-ja>ラーニング</span></a></li>
+          <li><a href="#membership"><span data-lang-en>Membership</span><span data-lang-ja>メンバーシップ</span></a></li>
+          <li><a href="#mission"><span data-lang-en>About</span><span data-lang-ja>美術館について</span></a></li>
+        </ul>
+      </nav>
+      <a class="nav-search" href="#" aria-label="Search the site"><span data-lang-en>Search</span><span data-lang-ja>検索</span> &#x2315;</a>
+      <button class="nav-toggle" type="button" aria-controls="nav-primary" aria-expanded="false" aria-label="Open navigation menu">
+        <span class="bars" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span data-lang-en>Menu</span><span data-lang-ja>メニュー</span>
+      </button>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <!-- Hero / current exhibition -->
+    <section class="hero" aria-labelledby="hero-title">
+      <aside class="hero-meta" aria-label="Current exhibition details">
+        <!-- Desktop: open list, mobile: details/summary accordion -->
+        <details open class="hero-meta-details">
+          <summary>
+            <span data-lang-en>Exhibition details</span><span data-lang-ja>展覧会情報</span>
+            <span aria-hidden="true"></span>
+          </summary>
+          <div>
+            <div class="row">
+              <span class="fn-num">01.</span>
+              <span class="label" data-lang-en>Chapter</span><span class="label" data-lang-ja>章</span>
+              <span class="value">
+                <span data-lang-en>Now on view</span><span data-lang-ja>開催中</span>
+              </span>
+            </div>
+            <hr aria-hidden="true">
+            <div class="row">
+              <span class="label" data-lang-en>Artist</span><span class="label" data-lang-ja>作家</span>
+              <span class="value"><strong>Anna Marlowe</strong><br><span data-lang-en>b. 1978, Manchester</span><span data-lang-ja>1978年マンチェスター生まれ</span></span>
+            </div>
+            <hr aria-hidden="true">
+            <div class="row">
+              <span class="label" data-lang-en>Dates</span><span class="label" data-lang-ja>会期</span>
+              <span class="value"><span data-lang-en>Apr 8 — Aug 24, 2026</span><span data-lang-ja>2026年4月8日 — 8月24日</span></span>
+            </div>
+            <hr aria-hidden="true">
+            <div class="row">
+              <span class="label" data-lang-en>Curator</span><span class="label" data-lang-ja>キュレーター</span>
+              <span class="value">R. Kobayashi</span>
+            </div>
+            <hr aria-hidden="true">
+            <div class="row">
+              <span class="label" data-lang-en>Location</span><span class="label" data-lang-ja>会場</span>
+              <span class="value">
+                <span data-lang-en>Floor 3, East Gallery</span><span data-lang-ja>3階 東ギャラリー</span>
+              </span>
+            </div>
+            <hr aria-hidden="true">
+            <div class="row">
+              <span class="label" data-lang-en>Admission</span><span class="label" data-lang-ja>料金</span>
+              <span class="value">
+                <span data-lang-en>Free with museum entry</span><span data-lang-ja>常設展料金に含む</span>
+              </span>
+            </div>
+          </div>
+        </details>
+      </aside>
+      <div class="hero-main">
+        <p class="hero-eyebrow"><span data-lang-en>Now on view — Featured Exhibition</span><span data-lang-ja>開催中の主要展覧会</span></p>
+        <figure class="hero-img">
+          <img
+            src="https://images.unsplash.com/photo-1554907984-15263bfd63bd?auto=format&fit=crop&w=1800&q=80"
+            alt="Installation view of After the Verb at MASS: visitors moving through a wide cream-walled gallery with large-scale geometric sculptures and a horizon-line wall text."
+            loading="eager"
+            width="1800" height="1125">
+          <figcaption class="hero-credit">
+            <span data-lang-en>Installation view, <em>After the Verb</em>, Floor 3 East. Photo: M. Tan / MASS.</span>
+            <span data-lang-ja>《After the Verb》インスタレーション・ビュー、3階東ギャラリー。撮影：M. Tan / MASS</span>
+          </figcaption>
+        </figure>
+        <h1 class="hero-title" id="hero-title">After the Verb</h1>
+        <p class="hero-sub">
+          <span data-lang-en>A survey of Anna Marlowe's two-decade investigation into language, labour, and the moment a sentence becomes a body.</span>
+          <span data-lang-ja>アンナ・マーロウが20年にわたり問いつづけてきた、言語・労働・そして文が身体になる瞬間についての回顧展。</span>
+        </p>
+        <div class="hero-cta">
+          <a href="#exhibitions"><span data-lang-en>Read curator's notes &rarr;</span><span data-lang-ja>キュレーター・ノートを読む &rarr;</span></a>
+          <a href="https://example.com/tickets" target="_blank" rel="noopener"><span data-lang-en>Plan your visit &nearr;</span><span data-lang-ja>来館計画を立てる &nearr;</span></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Exhibitions -->
+    <section class="section" id="exhibitions" aria-labelledby="exhibitions-title">
+      <div class="section-head">
+        <div>
+          <p class="section-eyebrow"><span data-lang-en>Exhibitions / 2026</span><span data-lang-ja>展覧会 / 2026年</span></p>
+          <h2 class="section-title" id="exhibitions-title"><span data-lang-en>Three programs across the year</span><span data-lang-ja>本年の三つの展覧会</span></h2>
+        </div>
+        <a class="section-link" href="#"><span data-lang-en>View all exhibitions &rarr;</span><span data-lang-ja>すべての展覧会 &rarr;</span></a>
+      </div>
+      <div class="ex-grid">
+        <article class="ex-card">
+          <div class="ex-num">
+            <span>01.</span>
+            <span class="ex-status now"><span data-lang-en>Now</span><span data-lang-ja>開催中</span></span>
+          </div>
+          <div class="ex-img">
+            <img src="https://images.unsplash.com/photo-1577720580479-7d839d829c73?auto=format&fit=crop&w=1200&q=80" alt="Visitors viewing a large geometric textile work in a cream-walled gallery.">
+          </div>
+          <div class="ex-meta">
+            <h3 class="ex-title">After the Verb</h3>
+            <p class="ex-dates"><span data-lang-en>Apr 8 — Aug 24, 2026 · Floor 3 East</span><span data-lang-ja>2026年4月8日 — 8月24日 · 3階東</span></p>
+            <p class="ex-curator"><span data-lang-en>Curated by R. Kobayashi</span><span data-lang-ja>キュレーター：R. Kobayashi</span></p>
+            <a class="link" href="#"><span data-lang-en>Read more &rarr;</span><span data-lang-ja>詳細を見る &rarr;</span></a>
+          </div>
+        </article>
+        <article class="ex-card">
+          <div class="ex-num">
+            <span>02.</span>
+            <span class="ex-status"><span data-lang-en>Next</span><span data-lang-ja>次回</span></span>
+          </div>
+          <div class="ex-img">
+            <img src="https://images.unsplash.com/photo-1531913764164-f85c52e6e654?auto=format&fit=crop&w=1200&q=80" alt="A wall of small framed prints arranged in a salon-style hang inside a museum.">
+          </div>
+          <div class="ex-meta">
+            <h3 class="ex-title"><span data-lang-en>Soft Index: Photography 1965 — 1989</span><span data-lang-ja>柔らかな索引：写真 1965 — 1989</span></h3>
+            <p class="ex-dates"><span data-lang-en>Sep 12, 2026 — Feb 7, 2027 · Floor 2</span><span data-lang-ja>2026年9月12日 — 2027年2月7日 · 2階</span></p>
+            <p class="ex-curator"><span data-lang-en>Curated by E. Adeyemi & the MASS Photography Council</span><span data-lang-ja>キュレーター：E. Adeyemi、MASS写真評議会</span></p>
+            <a class="link" href="#"><span data-lang-en>Read more &rarr;</span><span data-lang-ja>詳細を見る &rarr;</span></a>
+          </div>
+        </article>
+        <article class="ex-card">
+          <div class="ex-num">
+            <span>03.</span>
+            <span class="ex-status"><span data-lang-en>Past</span><span data-lang-ja>過去</span></span>
+          </div>
+          <div class="ex-img">
+            <img src="https://images.unsplash.com/photo-1594732832278-abd644401426?auto=format&fit=crop&w=1200&q=80" alt="A long gallery corridor with a large-scale painted abstract work at the end.">
+          </div>
+          <div class="ex-meta">
+            <h3 class="ex-title"><span data-lang-en>Quiet Mechanics</span><span data-lang-ja>静かな機構</span></h3>
+            <p class="ex-dates"><span data-lang-en>Nov 4, 2025 — Mar 16, 2026 · Floor 4</span><span data-lang-ja>2025年11月4日 — 2026年3月16日 · 4階</span></p>
+            <p class="ex-curator"><span data-lang-en>Curated by L. Marquardt</span><span data-lang-ja>キュレーター：L. Marquardt</span></p>
+            <a class="link" href="#"><span data-lang-en>View archive &rarr;</span><span data-lang-ja>アーカイブを見る &rarr;</span></a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Collection -->
+    <section class="section" id="collection" aria-labelledby="collection-title" style="background:var(--bg-sub);">
+      <div class="section-head">
+        <div>
+          <p class="section-eyebrow"><span data-lang-en>Collection</span><span data-lang-ja>コレクション</span></p>
+          <h2 class="section-title" id="collection-title"><span data-lang-en>1,284 works held in public trust</span><span data-lang-ja>1,284点を公共信託として所蔵</span></h2>
+        </div>
+        <a class="section-link" href="#"><span data-lang-en>Search the database &rarr;</span><span data-lang-ja>データベースを検索 &rarr;</span></a>
+      </div>
+      <div class="collection-grid">
+        <aside class="col-sidebar" aria-label="Collection filters">
+          <div class="filter-group">
+            <h3><span data-lang-en>By year</span><span data-lang-ja>年代から</span></h3>
+            <ul>
+              <li><a href="#">1960s <span class="count">24</span></a></li>
+              <li><a href="#">1970s <span class="count">38</span></a></li>
+              <li><a href="#">1980s <span class="count">102</span></a></li>
+              <li><a href="#">1990s <span class="count">186</span></a></li>
+              <li><a href="#">2000s <span class="count">241</span></a></li>
+              <li><a href="#">2010s <span class="count">418</span></a></li>
+              <li><a href="#">2020s <span class="count">275</span></a></li>
+            </ul>
+          </div>
+          <div class="filter-group">
+            <h3><span data-lang-en>By medium</span><span data-lang-ja>素材・技法から</span></h3>
+            <ul>
+              <li><a href="#"><span data-lang-en>Painting</span><span data-lang-ja>絵画</span> <span class="count">312</span></a></li>
+              <li><a href="#"><span data-lang-en>Sculpture</span><span data-lang-ja>彫刻</span> <span class="count">204</span></a></li>
+              <li><a href="#"><span data-lang-en>Photography</span><span data-lang-ja>写真</span> <span class="count">298</span></a></li>
+              <li><a href="#"><span data-lang-en>Moving image</span><span data-lang-ja>映像</span> <span class="count">119</span></a></li>
+              <li><a href="#"><span data-lang-en>Works on paper</span><span data-lang-ja>紙作品</span> <span class="count">266</span></a></li>
+              <li><a href="#"><span data-lang-en>Installation</span><span data-lang-ja>インスタレーション</span> <span class="count">85</span></a></li>
+            </ul>
+          </div>
+          <div class="filter-group">
+            <h3><span data-lang-en>By movement</span><span data-lang-ja>美術運動から</span></h3>
+            <ul>
+              <li><a href="#"><span data-lang-en>Minimalism</span><span data-lang-ja>ミニマリズム</span> <span class="count">62</span></a></li>
+              <li><a href="#"><span data-lang-en>Mono-ha</span><span data-lang-ja>もの派</span> <span class="count">18</span></a></li>
+              <li><a href="#"><span data-lang-en>Conceptual art</span><span data-lang-ja>コンセプチュアル・アート</span> <span class="count">96</span></a></li>
+              <li><a href="#"><span data-lang-en>Post-internet</span><span data-lang-ja>ポスト・インターネット</span> <span class="count">44</span></a></li>
+            </ul>
+          </div>
+        </aside>
+        <div>
+          <div class="work-grid">
+            <figure class="work">
+              <div class="work-img"><img src="https://images.unsplash.com/photo-1547891654-e66ed7ebb968?auto=format&fit=crop&w=900&q=80" alt="Untitled abstract canvas with overlapping pale rectangles."></div>
+              <figcaption class="work-cap"><strong>Untitled (Field IV)</strong><br>K. Vance, 1972<br><span data-lang-en>Oil on linen</span><span data-lang-ja>リネンに油彩</span></figcaption>
+            </figure>
+            <figure class="work">
+              <div class="work-img"><img src="https://images.unsplash.com/photo-1581343600400-d7ab2c424dba?auto=format&fit=crop&w=900&q=80" alt="Small bronze sculpture on a white plinth."></div>
+              <figcaption class="work-cap"><strong>Vessel for Slow Hours</strong><br>H. Mori, 1989<br><span data-lang-en>Cast bronze</span><span data-lang-ja>ブロンズ鋳造</span></figcaption>
+            </figure>
+            <figure class="work">
+              <div class="work-img"><img src="https://images.unsplash.com/photo-1578926375605-eaf7559b1458?auto=format&fit=crop&w=900&q=80" alt="Black and white photograph of an empty industrial interior."></div>
+              <figcaption class="work-cap"><strong>Warehouse, 04:00</strong><br>J. Petrov, 1998<br><span data-lang-en>Gelatin silver print</span><span data-lang-ja>ゼラチンシルバープリント</span></figcaption>
+            </figure>
+            <figure class="work">
+              <div class="work-img"><img src="https://images.unsplash.com/photo-1531913764164-f85c52e6e654?auto=format&fit=crop&w=900&q=80" alt="A grid of small framed works arranged on a gallery wall."></div>
+              <figcaption class="work-cap"><strong>Index of Soft Things</strong><br>Anna Marlowe, 2014<br><span data-lang-en>Mixed media on paper</span><span data-lang-ja>紙にミクストメディア</span></figcaption>
+            </figure>
+            <figure class="work">
+              <div class="work-img"><img src="https://images.unsplash.com/photo-1567696911980-2eed69a46042?auto=format&fit=crop&w=900&q=80" alt="A pale geometric sculpture in a sunlit gallery."></div>
+              <figcaption class="work-cap"><strong>Carry / Hold</strong><br>R. Olamide, 2021<br><span data-lang-en>Painted aluminium</span><span data-lang-ja>アルミニウムに塗装</span></figcaption>
+            </figure>
+            <figure class="work">
+              <div class="work-img"><img src="https://images.unsplash.com/photo-1572947650440-e8a97ef053b2?auto=format&fit=crop&w=900&q=80" alt="A still from a video work showing a hand drawing on glass."></div>
+              <figcaption class="work-cap"><strong>Notes, Glassed</strong><br>S. Linde, 2023<br><span data-lang-en>Single-channel video, 14:22</span><span data-lang-ja>シングルチャンネル映像、14分22秒</span></figcaption>
+            </figure>
+          </div>
+          <p class="col-all"><a href="#"><span data-lang-en>View all 1,284 works in the collection &rarr;</span><span data-lang-ja>所蔵作品1,284点をすべて見る &rarr;</span></a></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Visit -->
+    <section class="section" id="visit" aria-labelledby="visit-title">
+      <div class="section-head">
+        <div>
+          <p class="section-eyebrow"><span data-lang-en>Visit</span><span data-lang-ja>来館案内</span></p>
+          <h2 class="section-title" id="visit-title"><span data-lang-en>Hours, address & directions</span><span data-lang-ja>開館時間・所在地</span></h2>
+        </div>
+        <a class="section-link" href="#"><span data-lang-en>Accessibility services &rarr;</span><span data-lang-ja>アクセシビリティ案内 &rarr;</span></a>
+      </div>
+      <div class="visit-grid">
+        <div class="visit-block">
+          <h3><span data-lang-en>Opening hours</span><span data-lang-ja>開館時間</span></h3>
+          <table class="hours-table" aria-label="Weekly opening hours">
+            <tbody>
+              <tr><th><span data-lang-en>Monday</span><span data-lang-ja>月曜日</span></th><td class="closed"><span data-lang-en>Closed</span><span data-lang-ja>休館</span></td></tr>
+              <tr><th><span data-lang-en>Tuesday</span><span data-lang-ja>火曜日</span></th><td>10:00 — 18:00</td></tr>
+              <tr><th><span data-lang-en>Wednesday</span><span data-lang-ja>水曜日</span></th><td>10:00 — 18:00</td></tr>
+              <tr class="today" id="today-row"><th><span data-lang-en>Thursday — today</span><span data-lang-ja>木曜日 — 本日</span></th><td>10:00 — 20:00</td></tr>
+              <tr><th><span data-lang-en>Friday</span><span data-lang-ja>金曜日</span></th><td>10:00 — 20:00</td></tr>
+              <tr><th><span data-lang-en>Saturday</span><span data-lang-ja>土曜日</span></th><td>10:00 — 19:00</td></tr>
+              <tr><th><span data-lang-en>Sunday</span><span data-lang-ja>日曜日</span></th><td>10:00 — 17:00</td></tr>
+            </tbody>
+          </table>
+          <p class="visit-status">
+            <span class="live-dot" aria-hidden="true"></span>
+            <span data-lang-en>Open now &middot; Closes at 18:00 today. Tomorrow: 10:00 — 20:00.</span>
+            <span data-lang-ja>開館中 &middot; 本日18:00閉館。明日：10:00 — 20:00。</span>
+          </p>
+        </div>
+        <div class="visit-block">
+          <h3><span data-lang-en>Address</span><span data-lang-ja>所在地</span></h3>
+          <address class="visit-address">
+            <p>
+              <span data-lang-en>MASS — Museum of Modern and Contemporary Art<br>200 Harbour Lane<br>City North 100-0001<br>Japan</span>
+              <span data-lang-ja>MASS 現代美術館<br>〒100-0001 City North<br>ハーバーレーン 200</span>
+            </p>
+            <p>
+              <span data-lang-en>+81 (0)3 5555 1284<br>info@mass-fictional.org</span>
+              <span data-lang-ja>電話: +81 (0)3 5555 1284<br>メール: info@mass-fictional.org</span>
+            </p>
+            <p>
+              <a href="#"><span data-lang-en>Travel & access &rarr;</span><span data-lang-ja>交通・バリアフリー案内 &rarr;</span></a>
+            </p>
+          </address>
+        </div>
+        <div class="visit-block">
+          <h3><span data-lang-en>Map</span><span data-lang-ja>地図</span></h3>
+          <div class="visit-map" id="map" role="img" aria-label="Schematic map placeholder showing the location of MASS at the corner of Harbour Lane and Civic Avenue.">
+            <a href="https://maps.example.com/?q=MASS+Museum" target="_blank" rel="noopener">
+              <span data-lang-en>Open in maps &nearr;</span><span data-lang-ja>地図を開く &nearr;</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Mission (dark inverted) -->
+    <section class="mission" id="mission" aria-labelledby="mission-title">
+      <div class="mission-inner">
+        <aside class="mission-aside" aria-label="Institutional details">
+          <div>
+            <p class="label" data-lang-en>Founded</p><p class="label" data-lang-ja>設立</p>
+            <p class="value">1968</p>
+          </div>
+          <hr aria-hidden="true">
+          <div>
+            <p class="label" data-lang-en>Charter</p><p class="label" data-lang-ja>設立趣旨</p>
+            <p class="value"><span data-lang-en>Non-profit public trust, registered no. 0427-MM.</span><span data-lang-ja>公益財団法人として登録（登録番号 0427-MM）</span></p>
+          </div>
+          <hr aria-hidden="true">
+          <div>
+            <p class="label" data-lang-en>Accreditation</p><p class="label" data-lang-ja>認定</p>
+            <p class="value">ICOM &middot; AAM &middot; JAM</p>
+          </div>
+          <hr aria-hidden="true">
+          <div>
+            <p class="label" data-lang-en>Annual visitors</p><p class="label" data-lang-ja>年間来館者数</p>
+            <p class="value">412,000</p>
+          </div>
+        </aside>
+        <div class="mission-body">
+          <p class="mission-eyebrow" id="mission-title"><span data-lang-en>Our mission</span><span data-lang-ja>ミッション</span></p>
+          <blockquote class="mission-quote">
+            <span data-lang-en>Access is a right, not a feature. We hold this collection in public trust — and the building, the hours, the labels, the bench you rest on, all belong to you.</span>
+            <span data-lang-ja>アクセスは権利であり、付加価値ではありません。MASSのコレクションは公共の信託として保持されており、建物も、開館時間も、解説パネルも、休むためのベンチも、すべて訪れる人のものです。</span>
+          </blockquote>
+          <p class="mission-signature">
+            <span class="name">— Dr. Marina Asato</span>
+            <span class="role"><span data-lang-en>Director, MASS &middot; appointed 2022</span><span data-lang-ja>館長 / 2022年就任</span></span>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Learn -->
+    <section class="section" id="learn" aria-labelledby="learn-title">
+      <div class="section-head">
+        <div>
+          <p class="section-eyebrow"><span data-lang-en>Learn</span><span data-lang-ja>ラーニング</span></p>
+          <h2 class="section-title" id="learn-title"><span data-lang-en>Programs for every reader</span><span data-lang-ja>あらゆる学び手のためのプログラム</span></h2>
+        </div>
+        <a class="section-link" href="#"><span data-lang-en>All learning programs &rarr;</span><span data-lang-ja>すべてのプログラム &rarr;</span></a>
+      </div>
+      <div class="learn-grid">
+        <article class="learn-card">
+          <p class="learn-num">01.</p>
+          <h3 class="learn-title"><span data-lang-en>K — 12 schools</span><span data-lang-ja>学校教育（K — 12）</span></h3>
+          <p class="learn-desc">
+            <span data-lang-en>Free guided visits, in-classroom resource kits, and a teacher fellowship reaching 36,000 students per year.</span>
+            <span data-lang-ja>無料ガイドツアー、教室で使える教材キット、年間36,000人の児童・生徒に届く教員フェローシップ。</span>
+          </p>
+          <a href="#"><span data-lang-en>Book a school visit &rarr;</span><span data-lang-ja>学校団体予約 &rarr;</span></a>
+        </article>
+        <article class="learn-card">
+          <p class="learn-num">02.</p>
+          <h3 class="learn-title"><span data-lang-en>University & research</span><span data-lang-ja>大学・研究</span></h3>
+          <p class="learn-desc">
+            <span data-lang-en>Object-handling sessions, archive access, the MASS Reading Room, and the annual Doctoral Forum for emerging scholars.</span>
+            <span data-lang-ja>作品実見セッション、アーカイブ閲覧、MASS閲覧室、若手研究者のための「博士課程フォーラム」を毎年開催。</span>
+          </p>
+          <a href="#"><span data-lang-en>Request access &rarr;</span><span data-lang-ja>閲覧申請 &rarr;</span></a>
+        </article>
+        <article class="learn-card">
+          <p class="learn-num">03.</p>
+          <h3 class="learn-title"><span data-lang-en>Public programs</span><span data-lang-ja>パブリック・プログラム</span></h3>
+          <p class="learn-desc">
+            <span data-lang-en>Free Thursday talks, family Sundays, artist conversations, and a year-round program co-designed with neighbourhood groups.</span>
+            <span data-lang-ja>無料の木曜トーク、家族向け日曜プログラム、作家対話、近隣コミュニティと共に作る通年プログラム。</span>
+          </p>
+          <a href="#"><span data-lang-en>See this week's program &rarr;</span><span data-lang-ja>今週のプログラム &rarr;</span></a>
+        </article>
+      </div>
+    </section>
+
+    <!-- Membership -->
+    <section class="section" id="membership" aria-labelledby="membership-title" style="background:var(--bg-sub);">
+      <div class="section-head">
+        <div>
+          <p class="section-eyebrow"><span data-lang-en>Membership</span><span data-lang-ja>メンバーシップ</span></p>
+          <h2 class="section-title" id="membership-title"><span data-lang-en>Three ways to belong</span><span data-lang-ja>三つの参加のかたち</span></h2>
+        </div>
+        <a class="section-link" href="#"><span data-lang-en>Compare full benefits &rarr;</span><span data-lang-ja>特典を全比較 &rarr;</span></a>
+      </div>
+      <div class="mem-grid">
+        <div class="mem-tier">
+          <p class="mem-tier-name">Individual</p>
+          <p class="mem-price">¥6,000<span> / <span data-lang-en>year</span><span data-lang-ja>年間</span></span></p>
+          <ul class="mem-features">
+            <li><span data-lang-en>Unlimited free admission</span><span data-lang-ja>常時無料入館</span></li>
+            <li><span data-lang-en>Members' preview evenings</span><span data-lang-ja>会員内覧会</span></li>
+            <li><span data-lang-en>10% off shop & café</span><span data-lang-ja>ショップ・カフェ10%割引</span></li>
+            <li><span data-lang-en>Quarterly magazine</span><span data-lang-ja>季刊誌をお届け</span></li>
+          </ul>
+          <a class="mem-cta" href="#"><span data-lang-en>Join</span><span data-lang-ja>入会する</span></a>
+        </div>
+        <div class="mem-tier featured">
+          <p class="mem-tier-name featured-tag">Family</p>
+          <p class="mem-price">¥10,000<span> / <span data-lang-en>year</span><span data-lang-ja>年間</span></span></p>
+          <ul class="mem-features">
+            <li><span data-lang-en>Admission for 2 adults + up to 4 children</span><span data-lang-ja>大人2名・子ども4名まで入館</span></li>
+            <li><span data-lang-en>Priority family Sunday booking</span><span data-lang-ja>家族向けプログラム優先予約</span></li>
+            <li><span data-lang-en>Two guest passes per year</span><span data-lang-ja>年間2枚のゲストパス</span></li>
+            <li><span data-lang-en>All Individual benefits</span><span data-lang-ja>個人会員特典すべて</span></li>
+          </ul>
+          <a class="mem-cta" href="#"><span data-lang-en>Join as a family</span><span data-lang-ja>家族で入会する</span></a>
+        </div>
+        <div class="mem-tier">
+          <p class="mem-tier-name">Patron</p>
+          <p class="mem-price">¥120,000<span> / <span data-lang-en>year</span><span data-lang-ja>年間</span></span></p>
+          <ul class="mem-features">
+            <li><span data-lang-en>All Family benefits</span><span data-lang-ja>家族会員特典すべて</span></li>
+            <li><span data-lang-en>Curator-led private tours</span><span data-lang-ja>キュレーターによる貸切ツアー</span></li>
+            <li><span data-lang-en>Patron travel program</span><span data-lang-ja>パトロン向け美術トラベル</span></li>
+            <li><span data-lang-en>Acknowledgement in annual report</span><span data-lang-ja>年次報告書での謝辞掲載</span></li>
+          </ul>
+          <a class="mem-cta" href="#"><span data-lang-en>Become a patron</span><span data-lang-ja>パトロンになる</span></a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <a class="logo" href="#" aria-label="MASS home">MA<span>SS</span></a>
+          <p>
+            <span data-lang-en>Museum of Modern and Contemporary Art. A public trust. Held for everyone.</span>
+            <span data-lang-ja>現代美術館。公共の信託として、すべての人のために。</span>
+          </p>
+          <div class="footer-newsletter">
+            <label for="nl-email"><span data-lang-en>Newsletter</span><span data-lang-ja>ニュースレター</span></label>
+            <form id="nlForm" novalidate>
+              <input id="nl-email" type="email" required placeholder="you@example.org" aria-label="Email address">
+              <button type="submit"><span data-lang-en>Subscribe</span><span data-lang-ja>登録</span></button>
+            </form>
+            <p id="nlMessage" role="status" aria-live="polite" style="margin-top:.5rem;font-size:.78rem;color:var(--fg-muted);min-height:1.2rem;"></p>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4><span data-lang-en>Visit</span><span data-lang-ja>来館</span></h4>
+          <ul>
+            <li><a href="#visit"><span data-lang-en>Hours & admission</span><span data-lang-ja>開館時間と料金</span></a></li>
+            <li><a href="#"><span data-lang-en>Getting here</span><span data-lang-ja>アクセス</span></a></li>
+            <li><a href="#"><span data-lang-en>Accessibility</span><span data-lang-ja>アクセシビリティ</span></a></li>
+            <li><a href="#"><span data-lang-en>Family visits</span><span data-lang-ja>家族での来館</span></a></li>
+            <li><a href="#"><span data-lang-en>Group bookings</span><span data-lang-ja>団体予約</span></a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4><span data-lang-en>Plan</span><span data-lang-ja>計画する</span></h4>
+          <ul>
+            <li><a href="#exhibitions"><span data-lang-en>Exhibitions</span><span data-lang-ja>展覧会</span></a></li>
+            <li><a href="#collection"><span data-lang-en>Collection</span><span data-lang-ja>コレクション</span></a></li>
+            <li><a href="#"><span data-lang-en>Today at MASS</span><span data-lang-ja>本日のMASS</span></a></li>
+            <li><a href="#"><span data-lang-en>Calendar</span><span data-lang-ja>カレンダー</span></a></li>
+            <li><a href="#"><span data-lang-en>Shop &nearr;</span><span data-lang-ja>ショップ &nearr;</span></a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4><span data-lang-en>Programs</span><span data-lang-ja>プログラム</span></h4>
+          <ul>
+            <li><a href="#learn"><span data-lang-en>Learn</span><span data-lang-ja>ラーニング</span></a></li>
+            <li><a href="#"><span data-lang-en>Schools</span><span data-lang-ja>学校団体</span></a></li>
+            <li><a href="#"><span data-lang-en>Research & archive</span><span data-lang-ja>研究・アーカイブ</span></a></li>
+            <li><a href="#membership"><span data-lang-en>Membership</span><span data-lang-ja>メンバーシップ</span></a></li>
+            <li><a href="#"><span data-lang-en>Support MASS</span><span data-lang-ja>寄付・支援</span></a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4><span data-lang-en>About</span><span data-lang-ja>美術館について</span></h4>
+          <ul>
+            <li><a href="#mission"><span data-lang-en>Mission</span><span data-lang-ja>ミッション</span></a></li>
+            <li><a href="#"><span data-lang-en>People</span><span data-lang-ja>スタッフ</span></a></li>
+            <li><a href="#"><span data-lang-en>Annual report</span><span data-lang-ja>年次報告書</span></a></li>
+            <li><a href="#"><span data-lang-en>Press</span><span data-lang-ja>プレス</span></a></li>
+            <li><a href="#"><span data-lang-en>Careers</span><span data-lang-ja>採用</span></a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div>&copy; 2026 MASS &middot; <a href="#"><span data-lang-en>Accessibility statement</span><span data-lang-ja>アクセシビリティに関する声明</span></a> &middot; <a href="#"><span data-lang-en>Privacy</span><span data-lang-ja>プライバシー</span></a> &middot; <a href="#"><span data-lang-en>Terms</span><span data-lang-ja>利用規約</span></a></div>
+        <div class="social" aria-label="Social channels">
+          <a href="#" aria-label="MASS on Instagram">Instagram</a>
+          <a href="#" aria-label="MASS on YouTube">YouTube</a>
+          <a href="#" aria-label="MASS on RSS">RSS</a>
+        </div>
+      </div>
+    </div>
+    <p class="footer-disclaimer"><span data-lang-en>MASS is a fictional museum created for design research. It does not exist.</span><span data-lang-ja>MASSはデザイン研究のために制作された架空の美術館であり、実在しません。</span></p>
+  </footer>
+
+  <script>
+    // Sticky header shadow
+    (function () {
+      const header = document.querySelector('.site-header');
+      if (!header) return;
+      const onScroll = () => header.classList.toggle('scrolled', window.scrollY > 4);
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+    })();
+
+    // Mobile nav toggle
+    (function () {
+      const toggle = document.querySelector('.nav-toggle');
+      const nav = document.getElementById('nav-primary');
+      if (!toggle || !nav) return;
+      toggle.addEventListener('click', () => {
+        const open = nav.classList.toggle('open');
+        toggle.setAttribute('aria-expanded', String(open));
+      });
+      nav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+        nav.classList.remove('open');
+        toggle.setAttribute('aria-expanded', 'false');
+      }));
+    })();
+
+    // Language switcher (EN <-> JA, ES/ZH disabled)
+    (function () {
+      const buttons = document.querySelectorAll('.lang-switch button[data-lang-set]');
+      function setLang(code) {
+        document.documentElement.setAttribute('lang', code);
+        buttons.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.langSet === code)));
+        try { localStorage.setItem('mass-lang', code); } catch (e) { /* noop */ }
+      }
+      buttons.forEach(b => b.addEventListener('click', () => setLang(b.dataset.langSet)));
+      let saved = null;
+      try { saved = localStorage.getItem('mass-lang'); } catch (e) { /* noop */ }
+      if (saved === 'en' || saved === 'ja') setLang(saved);
+    })();
+
+    // Newsletter form
+    (function () {
+      const form = document.getElementById('nlForm');
+      const msg = document.getElementById('nlMessage');
+      if (!form) return;
+      form.addEventListener('submit', e => {
+        e.preventDefault();
+        if (!form.checkValidity()) {
+          msg.textContent = document.documentElement.lang === 'ja'
+            ? '有効なメールアドレスを入力してください。'
+            : 'Please enter a valid email address.';
+          return;
+        }
+        msg.textContent = document.documentElement.lang === 'ja'
+          ? 'ありがとうございます。ニュースレターを購読しました。'
+          : 'Thank you. You are subscribed to the MASS newsletter.';
+        form.reset();
+      });
+    })();
+  </script>
+</body>
+</html>
