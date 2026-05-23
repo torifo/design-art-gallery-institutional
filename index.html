@@ -10,6 +10,19 @@
   <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Inter+Tight:wght@500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :where(html,body){
+      line-break:strict;
+      word-break:normal;
+      overflow-wrap:break-word;
+      hanging-punctuation:allow-end;
+    }
+    :where(h1,h2,h3,h4,p,li,dt,dd,figcaption,blockquote,a,span,small,strong,em,button){
+      line-break:strict;
+      word-break:auto-phrase;
+      overflow-wrap:break-word;
+    }
+    :where(h1,h2,h3,h4,[class*=title],[class*=brand],[class*=label],[class*=tag],[class*=kanban],[class*=seal]){text-wrap:balance}
+    :where(p,li,dd,figcaption,blockquote){text-wrap:pretty}
     :root { --bg:#FAF7F0; --bg-sub:#F2EEE3; --bg-deep:#1A1A1A; --fg:#181818; --fg-muted:#5A5A56; --fg-light:#989088; --border:#D4CFC2; --border-strong:#B8B2A4; --accent:#DD1A21; --accent-2:#1A4A8E; --accent-2-deep:#0F2F5C; --font-display:'Inter Tight',-apple-system,'Helvetica Neue',sans-serif; --font-sans:'Inter',-apple-system,sans-serif; --font-serif:'EB Garamond',Garamond,Georgia,serif; --space-xl:clamp(5rem,10vw,9rem); --space-lg:clamp(3rem,6vw,5rem); --space-md:2rem; --sidebar-w:280px; --gutter:clamp(1rem,3vw,2.5rem); --ease:cubic-bezier(.22,1,.36,1); --max:1440px; }
     html { -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; scroll-behavior:smooth; }
     body { background:var(--bg); color:var(--fg); font-family:var(--font-sans); font-weight:400; line-height:1.65; font-size:16px; }
